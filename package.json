@@ -1,7 +1,7 @@
 {
   "name": "pearpass-app-browser-extension",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
@@ -18,7 +18,9 @@
     "build:watch": "npm-run-all --parallel build:watch:main build:watch:content build:watch:background build:watch:inject",
     "preview": "vite preview",
     "test": "jest",
-    "lint": "eslint --fix ./src",
+    "lint:fix": "eslint --fix ./src",
+    "lint": "eslint ./src",
+    "prepare": "husky",
     "lingui:extract": "lingui extract",
     "lingui:compile": "lingui compile",
     "update-submodules": "bash scripts/update-submodules.sh"
@@ -64,6 +66,7 @@
     "@testing-library/react": "16.2.0",
     "@vitejs/plugin-react": "4.3.4",
     "babel-jest": "29.7.0",
+    "husky": "9.1.7",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "npm-run-all": "4.1.5",

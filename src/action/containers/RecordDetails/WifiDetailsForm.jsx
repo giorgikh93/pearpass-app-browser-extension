@@ -11,7 +11,6 @@ import { useCopyToClipboard } from '../../../shared/hooks/useCopyToClipboard'
 import { CommonFileIcon } from '../../../shared/icons/CommonFileIcon'
 import { CopyIcon } from '../../../shared/icons/CopyIcon'
 import { PasswordIcon } from '../../../shared/icons/PasswordIcon'
-import { WifiIcon } from '../../../shared/icons/WifiIcon'
 import { CustomFields } from '../CustomFields'
 import { WifiPasswordQRCode } from '../WifiPasswordQRCode'
 

@@ -14,7 +14,7 @@ export const EmptyCollectionView = () => {
     { text: t`Create a credit card`, type: RECORD_TYPES.CREDIT_CARD },
     { text: t`Create a note`, type: RECORD_TYPES.NOTE },
     { text: t`Save Wifi`, type: RECORD_TYPES.WIFI_PASSWORD },
-    { text: t`Save a PassPhrase`, type: RECORD_TYPES.PASS_PHRASE },
+    { text: t`Save a Recovery phrase`, type: RECORD_TYPES.PASS_PHRASE },
     { text: t`Create a custom element`, type: RECORD_TYPES.CUSTOM }
   ]
 

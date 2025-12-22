@@ -143,19 +143,19 @@ export const CreateOrEditIdentity = ({
         passportNationality: values.passportNationality,
         passportDob: values.passportDob,
         passportGender: values.passportGender,
-        passportPicture: initialRecord?.data?.passportPicture ?? '',
+        passportPicture: initialRecord?.data?.passportPicture ?? [],
         // Identity card fields
         idCardNumber: values.idCardNumber,
         idCardDateOfIssue: values.idCardDateOfIssue,
         idCardExpiryDate: values.idCardExpiryDate,
         idCardIssuingCountry: values.idCardIssuingCountry,
-        idCardPicture: initialRecord?.data?.idCardPicture ?? '',
+        idCardPicture: initialRecord?.data?.idCardPicture ?? [],
         // Driving license fields
         drivingLicenseNumber: values.drivingLicenseNumber,
         drivingLicenseDateOfIssue: values.drivingLicenseDateOfIssue,
         drivingLicenseExpiryDate: values.drivingLicenseExpiryDate,
         drivingLicenseIssuingCountry: values.drivingLicenseIssuingCountry,
-        drivingLicensePicture: initialRecord?.data?.drivingLicensePicture ?? '',
+        drivingLicensePicture: initialRecord?.data?.drivingLicensePicture ?? [],
         attachments: initialRecord?.data?.attachments ?? []
       }
     }

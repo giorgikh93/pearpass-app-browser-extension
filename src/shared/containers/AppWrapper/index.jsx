@@ -4,7 +4,6 @@ import { setPearpassVaultClient, VaultProvider } from 'pearpass-lib-vault'
 
 import { messages } from '../../../locales/en/messages'
 import { PearpassVaultClient } from '../../../vaultClient'
-import { MODE } from '../../constants/envMode'
 import { LoadingProvider } from '../../context/LoadingContext'
 import { RouterProvider } from '../../context/RouterContext'
 import '../../../index.css'

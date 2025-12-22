@@ -1,5 +1,3 @@
-/** @typedef {import('pear-interface')} */ /* global Pear */
-
 import { useEffect } from 'react'
 
 import { setPearpassVaultClient, useUserData } from 'pearpass-lib-vault'

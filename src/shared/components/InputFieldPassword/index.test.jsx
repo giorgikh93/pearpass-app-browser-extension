@@ -40,26 +40,28 @@ describe('InputFieldPassword', () => {
     expect(input).toHaveAttribute('type', 'password')
   })
 
-  it('displays strongness indicator when hasStrongness is true', () => {
+  it('displays strongness indicator when hasStrongness is true and password is strong', () => {
     const { getByText } = render(
       <InputFieldPassword
-        value="StrongPassword123!"
+        value="StrongPassword123!@#StrongPassword123!@#"
         onChange={() => {}}
         hasStrongness={true}
       />
     )
-    expect(getByText('Strong')).toBeInTheDocument()
+    expect(getByText('Safe')).toBeInTheDocument()
   })
 
-  it('displays weak indicator for unsafe passwords', () => {
-    const { getByText } = render(
+  it('does not display strongness indicator for weak passwords', () => {
+    const { queryByText } = render(
       <InputFieldPassword
         value="weak"
         onChange={() => {}}
         hasStrongness={true}
       />
     )
-    expect(getByText('Vulnerable')).toBeInTheDocument()
+    // When password is weak/vulnerable, success is false and no indicator is shown
+    expect(queryByText('Vulnerable')).not.toBeInTheDocument()
+    expect(queryByText('Weak')).not.toBeInTheDocument()
   })
 
   it('renders additional items when provided', () => {

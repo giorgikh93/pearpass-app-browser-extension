@@ -74,7 +74,13 @@ export const PassPhrase = ({ isCreateOrEdit, onChange, value, error }) => {
 
     if (pastedText) {
       const words = parsePassphraseText(pastedText)
-
+      if (!isValidRange(words.length)) {
+        setToast({
+          message: t('Only 12 or 24 words are allowed'),
+          icon: ErrorIcon
+        })
+        return
+      }
       setPassphraseWords(words)
       detectAndUpdateSettings(words)
       if (onChange) {
@@ -98,7 +104,7 @@ export const PassPhrase = ({ isCreateOrEdit, onChange, value, error }) => {
     <div className="bg-grey400-mode1 border-grey100-mode1 flex flex-col gap-5 rounded-[10px] border p-[10px]">
       <div className="flex flex-row items-center gap-[10px]">
         <PassPhraseIcon />
-        <span className="text-white-mode1 text-[12px] font-normal">{t`PassPhrase`}</span>
+        <span className="text-white-mode1 text-[12px] font-normal">{t`Recovery phrase`}</span>
       </div>
       <div className="flex flex-row flex-wrap justify-around gap-x-[5px] gap-y-[15px]">
         {passphraseWords.map((word, i) => (

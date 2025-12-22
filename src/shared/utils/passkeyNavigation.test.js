@@ -14,27 +14,32 @@ jest.mock('./logger.js', () => ({
 }))
 
 describe('shouldReturnToPasskeySelection', () => {
-  it('returns true when returnToPasskey is true in router state', () => {
-    const routerState = { returnToPasskey: true }
-    expect(shouldReturnToPasskeySelection(routerState)).toBe(true)
+  it('returns true when inPasskeyFlow is true and page is set in router state', () => {
+    const routerState = { inPasskeyFlow: true, page: 'getPasskey' }
+    expect(shouldReturnToPasskeySelection(routerState)).toBe('getPasskey')
   })
 
-  it('returns false when returnToPasskey is false in router state', () => {
-    const routerState = { returnToPasskey: false }
-    expect(shouldReturnToPasskeySelection(routerState)).toBe(false)
+  it('returns falsy when inPasskeyFlow is true but page is not set', () => {
+    const routerState = { inPasskeyFlow: true }
+    expect(shouldReturnToPasskeySelection(routerState)).toBeFalsy()
   })
 
-  it('returns false when routerState is null', () => {
-    expect(shouldReturnToPasskeySelection(null)).toBe(false)
+  it('returns falsy when inPasskeyFlow is false', () => {
+    const routerState = { inPasskeyFlow: false, page: 'getPasskey' }
+    expect(shouldReturnToPasskeySelection(routerState)).toBeFalsy()
   })
 
-  it('returns false when routerState is undefined', () => {
-    expect(shouldReturnToPasskeySelection()).toBe(false)
+  it('returns falsy when routerState is null', () => {
+    expect(shouldReturnToPasskeySelection(null)).toBeFalsy()
   })
 
-  it('returns false when returnToPasskey is not present in router state', () => {
+  it('returns falsy when routerState is undefined', () => {
+    expect(shouldReturnToPasskeySelection()).toBeFalsy()
+  })
+
+  it('returns falsy when inPasskeyFlow is not present in router state', () => {
     const routerState = { someOtherProp: 'value' }
-    expect(shouldReturnToPasskeySelection(routerState)).toBe(false)
+    expect(shouldReturnToPasskeySelection(routerState)).toBeFalsy()
   })
 })
 

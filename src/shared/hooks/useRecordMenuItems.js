@@ -38,7 +38,7 @@ export const useRecordMenuItems = () => {
       color: RECORD_COLOR_BY_TYPE.wifiPassword
     },
     {
-      name: t`PassPhrase`,
+      name: t`Recovery phrase`,
       type: RECORD_TYPES.PASS_PHRASE,
       icon: RECORD_ICON_BY_TYPE.passPhrase,
       color: RECORD_COLOR_BY_TYPE.passPhrase

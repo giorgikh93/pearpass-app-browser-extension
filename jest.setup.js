@@ -4,6 +4,11 @@ import { TextEncoder, TextDecoder } from 'util'
 global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 
+// Mock @lingui/core/macro for tests
+jest.mock('@lingui/core/macro', () => ({
+  t: (str) => str
+}))
+
 // Mock crypto.getRandomValues for tests
 if (!global.crypto) {
   global.crypto = {}

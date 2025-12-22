@@ -38,7 +38,7 @@ export const CreateOrEditPassPhrase = ({
 }) => {
   const schema = Validator.object({
     title: Validator.string().required(t`Title is required`),
-    passPhrase: Validator.string().required(t`PassPhrase is required`),
+    passPhrase: Validator.string().required(t`Recovery phrase is required`),
     note: Validator.string(),
     customFields: Validator.array().items(
       Validator.object({
