@@ -1,8 +1,11 @@
 import './nativeMessaging' // Initialize native messaging handler
+import { ensureClientKeypairUnlocked } from './clientKeyStore'
 import { MESSAGES, ALARMS } from './constants'
 import { secureChannel } from './secureChannel'
 import * as CredentialGenerator from './utils/credentialGenerator'
 import { validateSender } from './utils/validateSender'
+import { AUTH_ERROR_PATTERNS } from '../shared/constants/auth'
+import { CRYPTO_ALGORITHMS, ELLIPTIC_CURVES } from '../shared/constants/crypto'
 import {
   ERROR_CODES,
   CONTENT_MESSAGE_TYPES
@@ -264,25 +267,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     ;(async () => {
       try {
         await secureChannel.pinIdentity(msg.identity)
-        const handshake = await secureChannel.beginHandshake()
-        if (!handshake.ok) {
-          sendResponse({
-            success: false,
-            error: handshake.error || 'HandshakeFailed',
-            code: ERROR_CODES.HANDSHAKE_FAILED
-          })
-          return
-        }
-        const finish = await secureChannel.finishHandshake()
-        if (!finish?.ok) {
-          sendResponse({
-            success: false,
-            error: finish?.error || 'HandshakeFinishFailed',
-            code: ERROR_CODES.HANDSHAKE_FAILED
-          })
-          return
-        }
-        sendResponse({ success: true, sessionId: handshake.sessionId })
+        return sendResponse({ ok: true })
       } catch (e) {
         sendResponse({
           success: false,
@@ -305,6 +290,30 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           paired: false,
           error: e?.message,
           code: ERROR_CODES.UNKNOWN
+        })
+      }
+    })()
+    return true
+  }
+
+  if (msg.type === SECURE_MESSAGE_TYPES.UNLOCK_CLIENT_KEYSTORE) {
+    ;(async () => {
+      try {
+        const { masterPassword } = msg
+        if (!masterPassword) {
+          return sendResponse({
+            success: false,
+            error: AUTH_ERROR_PATTERNS.MASTER_PASSWORD_REQUIRED,
+            code: ERROR_CODES.AUTHENTICATION_FAILED
+          })
+        }
+        await ensureClientKeypairUnlocked(masterPassword)
+        return sendResponse({ success: true })
+      } catch (e) {
+        return sendResponse({
+          success: false,
+          error: e?.message,
+          code: ERROR_CODES.AUTHENTICATION_FAILED
         })
       }
     })()
@@ -514,8 +523,8 @@ const getAssertionCredential = async (
     'pkcs8',
     privateKeyBuffer,
     {
-      name: 'ECDSA',
-      namedCurve: 'P-256'
+      name: CRYPTO_ALGORITHMS.ECDSA,
+      namedCurve: ELLIPTIC_CURVES.P_256
     },
     false,
     ['sign']
