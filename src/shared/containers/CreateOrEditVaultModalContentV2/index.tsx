@@ -163,63 +163,61 @@ export const CreateOrEditVaultModalContentV2 = ({
   const runSubmit = handleSubmit(submit)
 
   return (
-    <div className="border-border-primary bg-surface-primary w-[500px] overflow-y-auto rounded-[8px] border">
-      <Dialog
-        title={title}
-        onClose={onClose}
-        testID="create-or-edit-vault-dialog"
-        closeButtonTestID="create-or-edit-vault-close"
-        footer={
-          <div className="flex w-full justify-end gap-[var(--spacing8)]">
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={onClose}
-              data-testid="create-or-edit-vault-discard"
-            >
-              {t`Discard`}
-            </Button>
-            <Button
-              variant="primary"
-              size="small"
-              disabled={!canSubmit}
-              isLoading={isLoading || isCreateVaultLoading}
-              onClick={() => {
-                void runSubmit()
-              }}
-              data-testid="create-or-edit-vault-save"
-            >
-              {t`Save`}
-            </Button>
-          </div>
-        }
+    <Dialog
+      title={title}
+      onClose={onClose}
+      testID="create-or-edit-vault-dialog"
+      closeButtonTestID="create-or-edit-vault-close"
+      footer={
+        <div className="flex w-full justify-end gap-[var(--spacing8)]">
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={onClose}
+            data-testid="create-or-edit-vault-discard"
+          >
+            {t`Discard`}
+          </Button>
+          <Button
+            variant="primary"
+            size="small"
+            disabled={!canSubmit}
+            isLoading={isLoading || isCreateVaultLoading}
+            onClick={() => {
+              void runSubmit()
+            }}
+            data-testid="create-or-edit-vault-save"
+          >
+            {t`Save`}
+          </Button>
+        </div>
+      }
+    >
+      <Form
+        testID="create-or-edit-vault-form"
+        aria-label={isRename ? t`Rename vault form` : t`Create vault form`}
       >
-        <Form
-          testID="create-or-edit-vault-form"
-          aria-label={isRename ? t`Rename vault form` : t`Create vault form`}
-        >
-          <div className="flex flex-col gap-[var(--spacing16)]">
-            {submitError ? (
-              <AlertMessage
-                variant="error"
-                size="small"
-                title={t`Something went wrong`}
-                description={submitError}
-                testID="create-or-edit-vault-alert"
-              />
-            ) : null}
-
-            <InputField
-              label={t`Vault Name`}
-              placeholder={t`Enter Name`}
-              value={String(nameField.value ?? '')}
-              onChange={onNameChange}
-              error={nameField.error}
-              testID="create-or-edit-vault-name"
+        <div className="flex flex-col gap-[var(--spacing16)]">
+          {submitError ? (
+            <AlertMessage
+              variant="error"
+              size="small"
+              title={t`Something went wrong`}
+              description={submitError}
+              testID="create-or-edit-vault-alert"
             />
-          </div>
-        </Form>
-      </Dialog>
-    </div>
+          ) : null}
+
+          <InputField
+            label={t`Vault Name`}
+            placeholder={t`Enter Name`}
+            value={String(nameField.value ?? '')}
+            onChange={onNameChange}
+            error={nameField.error}
+            testID="create-or-edit-vault-name"
+          />
+        </div>
+      </Form>
+    </Dialog>
   )
 }
