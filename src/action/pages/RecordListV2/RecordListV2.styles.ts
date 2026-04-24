@@ -1,5 +1,4 @@
 import type { ThemeColors } from '@tetherto/pearpass-lib-ui-kit'
-import { rawTokens } from '@tetherto/pearpass-lib-ui-kit'
 
 export const createStyles = (colors: ThemeColors) => ({
   root: {
@@ -18,13 +17,5 @@ export const createStyles = (colors: ThemeColors) => ({
     minWidth: 0,
     height: '100%',
     backgroundColor: colors.colorSurfacePrimary
-  },
-
-  placeholder: {
-    display: 'flex' as const,
-    flex: 1,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    padding: rawTokens.spacing24
   }
 })
