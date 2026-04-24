@@ -4,6 +4,8 @@ import { useRecords } from '@tetherto/pearpass-lib-vault'
 import { useTheme } from '@tetherto/pearpass-lib-ui-kit'
 
 import { createStyles } from './RecordListV2.styles'
+import { EmptyCollectionViewV2 } from '../../containers/EmptyCollectionViewV2'
+import { EmptyResultsViewV2 } from '../../containers/EmptyResultsViewV2'
 import { MainViewHeader } from '../../containers/MainViewHeader'
 import { RecordListViewV2 } from '../../containers/RecordListView'
 import {
@@ -30,6 +32,7 @@ export const RecordListV2 = () => {
   const [sortKey, setSortKey] = useState<SortKey>(SORT_KEYS.LAST_UPDATED_NEWEST)
   const [isMultiSelectOn, setIsMultiSelectOn] = useState(false)
   const [selectedRecords, setSelectedRecords] = useState<string[]>([])
+  const [searchValue] = useState('')
 
   const isFavoritesView = isFavorite(routerState?.folder ?? '')
   const selectedFolder =
@@ -57,6 +60,8 @@ export const RecordListV2 = () => {
     [records, sort]
   )
 
+  const hasRecords = !!records?.length
+
   return (
     <div style={styles.root} data-testid="record-list-v2-page">
       <SidebarV2 />
@@ -67,12 +72,17 @@ export const RecordListV2 = () => {
           isMultiSelectOn={isMultiSelectOn}
           setIsMultiSelectOn={setIsMultiSelectOn}
         />
-        <RecordListViewV2
-          sections={sections}
-          isMultiSelectOn={isMultiSelectOn}
-          selectedRecords={selectedRecords}
-          setSelectedRecords={setSelectedRecords}
-        />
+        {hasRecords && (
+          <RecordListViewV2
+            sections={sections}
+            isMultiSelectOn={isMultiSelectOn}
+            selectedRecords={selectedRecords}
+            setSelectedRecords={setSelectedRecords}
+          />
+        )}
+
+        {!hasRecords && !searchValue && <EmptyCollectionViewV2 />}
+        {!hasRecords && !!searchValue && <EmptyResultsViewV2 />}
       </div>
     </div>
   )
