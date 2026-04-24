@@ -219,4 +219,20 @@ declare module '@tetherto/pearpass-lib-vault' {
 
   export const useRecords: any
   export const useBlindMirrors: any
+
+  export interface UseRecordCountsByTypeResult {
+    isLoading: boolean
+    data: Record<string, number> | undefined
+  }
+  export function useRecordCountsByType(): UseRecordCountsByTypeResult
+
+  export const closeAllInstances: () => Promise<void>
+}
+
+declare module '@tetherto/pearpass-lib-constants' {
+  export const UNSUPPORTED: boolean
+  export const AUTHENTICATOR_ENABLED: boolean
+  export const PROTECTED_VAULT_ENABLED: boolean
+  export const DELETE_VAULT_ENABLED: boolean
+  export const EXTENSION_DESIGN_VERSION: number
 }
