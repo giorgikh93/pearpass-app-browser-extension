@@ -14,6 +14,7 @@ import {
   SORT_KEYS,
   type SortKey
 } from '../../../shared/constants/sortOptions'
+import { useAppHeaderContext } from '../../../shared/context/AppHeaderContext'
 import { useModal } from '../../../shared/context/ModalContext'
 import { useRouter } from '../../../shared/context/RouterContext'
 import { DeleteRecordsModalContentV2 } from '../../../shared/containers/DeleteRecordsModalContentV2'
@@ -33,11 +34,11 @@ export const RecordListV2 = () => {
     state: { recordType?: string; folder?: string } | undefined
   }
   const { setModal, isOpen: isModalOpen } = useModal()
+  const { searchValue } = useAppHeaderContext()
 
   const [sortKey, setSortKey] = useState<SortKey>(SORT_KEYS.LAST_UPDATED_NEWEST)
   const [isMultiSelectOn, setIsMultiSelectOn] = useState(false)
   const [selectedRecords, setSelectedRecords] = useState<string[]>([])
-  const [searchValue] = useState('')
 
   const isFavoritesView = isFavorite(routerState?.folder ?? '')
   const selectedFolder =
@@ -49,6 +50,7 @@ export const RecordListV2 = () => {
     shouldSkip: true,
     variables: {
       filters: {
+        searchPattern: searchValue,
         type:
           routerState?.recordType === 'all'
             ? undefined

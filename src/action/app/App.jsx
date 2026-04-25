@@ -5,6 +5,8 @@ import { FadeInWrapper } from '../../shared/components/FadeInWrapper'
 import { WelcomePageWrapper } from '../../shared/components/WelcomePageWrapper'
 import { useBlockingStateContext } from '../../shared/context/BlockingStateContext'
 import { useGlobalLoading } from '../../shared/context/LoadingContext'
+import { isV2 } from '../../shared/utils/designVersion'
+import { AppHeaderContainer } from '../containers/AppHeaderContainer'
 
 export const App = () => {
   const { isChecking: isBlockingStateChecking } = useBlockingStateContext()
@@ -15,9 +17,13 @@ export const App = () => {
 
   useGlobalLoading({ isLoading })
 
+  const containerClassName = isV2()
+    ? 'bg-black-mode1 flex flex-col'
+    : 'bg-black-mode1 flex items-center'
+
   return (
     <div
-      className="bg-black-mode1 flex items-center"
+      className={containerClassName}
       style={{
         height: `${windowSize.height}px`,
         width: `${windowSize.width}px`
@@ -27,6 +33,13 @@ export const App = () => {
         <FadeInWrapper>
           <WelcomePageWrapper />
         </FadeInWrapper>
+      ) : isV2() ? (
+        <>
+          <AppHeaderContainer />
+          <div className="flex min-h-0 flex-1 flex-col">
+            <Routes />
+          </div>
+        </>
       ) : (
         <Routes />
       )}
