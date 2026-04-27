@@ -1,58 +1,76 @@
-import { createElement } from 'react'
-
-import {
-  GppBad,
-  GppMaybe,
-  PearpassLogo,
-  VerifiedUser
-} from '@tetherto/pearpass-lib-ui-kit/icons'
+import './contentI18n.js'
+import { t } from '@lingui/core/macro'
 import {
   checkPasswordStrength,
   PASSWORD_STRENGTH
 } from '@tetherto/pearpass-utils-password-check'
-import { renderToStaticMarkup } from 'react-dom/server'
+
+import {
+  gppBadSvgHtml,
+  gppMaybeSvgHtml,
+  pearpassLogoSvgHtml,
+  verifiedUserSvgHtml
+} from './passwordStrengthInlineIcons'
 
 /** @type {WeakMap<HTMLElement, { el: HTMLDivElement; cleanup: () => void }>} */
 const activeByField = new WeakMap()
 
 function getDisplayLabel(type) {
   if (type === PASSWORD_STRENGTH.SAFE) {
-    return 'Strong'
+    return t`Strong`
   }
   if (type === PASSWORD_STRENGTH.WEAK) {
-    return 'Decent'
+    return t`Decent`
   }
-  return 'Vulnerable'
+  return t`Vulnerable`
 }
 
-/** Pearpass logo tint; status row uses `accent` */
-const LOCK_LIME = '#C0D836'
+/**
+ * All hex values for the in-field strength pill (content script cannot use UI kit
+ * theme CSS). Single source for a palette refresh.
+ */
+const STRENGTH_COLORS = {
+  /** Lock icon in the green (Strong/Decent) states */
+  lockLime: '#C0D836',
+  /** Pocket + status strip (Strong / Decent) */
+  pocketGreen: '#15180E',
+  statusGreen: '#212814',
+  safeAccent: '#BEE35A',
+  weakAccent: '#D7D245',
+  /** Vulnerable */
+  pocketDark: '#141414',
+  statusDark: '#1c1c1c',
+  vulnerableAccent: '#D13B3D'
+}
 
-/** Reference: lock pocket + status strip */
-const POCKET_BG = '#15180E'
-const STATUS_BG = '#212814'
+const STRENGTH_TYPOGRAPHY = {
+  fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+  labelFontSizePx: 12
+}
 
 const THEME = {
   [PASSWORD_STRENGTH.SAFE]: {
-    pocketBg: POCKET_BG,
-    statusBg: STATUS_BG,
-    accent: '#BEE35A'
+    pocketBg: STRENGTH_COLORS.pocketGreen,
+    statusBg: STRENGTH_COLORS.statusGreen,
+    accent: STRENGTH_COLORS.safeAccent
   },
   [PASSWORD_STRENGTH.WEAK]: {
-    pocketBg: POCKET_BG,
-    statusBg: STATUS_BG,
-    accent: '#D7D245'
+    pocketBg: STRENGTH_COLORS.pocketGreen,
+    statusBg: STRENGTH_COLORS.statusGreen,
+    accent: STRENGTH_COLORS.weakAccent
   },
   [PASSWORD_STRENGTH.VULNERABLE]: {
-    pocketBg: '#141414',
-    statusBg: '#1c1c1c',
-    accent: '#D13B3D'
+    pocketBg: STRENGTH_COLORS.pocketDark,
+    statusBg: STRENGTH_COLORS.statusDark,
+    accent: STRENGTH_COLORS.vulnerableAccent
   }
 }
 
 const GAP_PILL_EYE = 8
 const PILL_H = 20
 const POSITION_LEFT_NUDGE = 8
+
+const PEARPASS_LOGO_SVG_HTML = pearpassLogoSvgHtml(STRENGTH_COLORS.lockLime)
 
 /**
  * @param {HTMLInputElement} input
@@ -113,29 +131,6 @@ function findRightmostTrailingControlLeft(input, inputRect) {
   return bestLeft
 }
 
-const PEARPASS_LOGO_SVG_HTML = renderToStaticMarkup(
-  createElement(PearpassLogo, {
-    width: 14,
-    height: 14,
-    style: { color: LOCK_LIME, display: 'block' },
-    'aria-hidden': true
-  })
-)
-
-const STATUS_ICON_W = 12
-const STATUS_ICON_H = 12
-
-function iconSvgHtml(Icon, color) {
-  return renderToStaticMarkup(
-    createElement(Icon, {
-      width: STATUS_ICON_W,
-      height: STATUS_ICON_H,
-      style: { color, display: 'block' },
-      'aria-hidden': true
-    })
-  )
-}
-
 /**
  * Renders a pill **inside the right area** of the page password field (fixed overlay
  * aligned to the input, with extra padding on the field). Uses
@@ -166,13 +161,13 @@ export function showPasswordStrengthNearField(inputElement, password) {
   const lockSvg = PEARPASS_LOGO_SVG_HTML
   let statusIconSvg
   if (type === PASSWORD_STRENGTH.SAFE) {
-    statusIconSvg = iconSvgHtml(VerifiedUser, c)
+    statusIconSvg = verifiedUserSvgHtml(c)
   } else if (type === PASSWORD_STRENGTH.WEAK) {
-    statusIconSvg = iconSvgHtml(GppMaybe, c)
+    statusIconSvg = gppMaybeSvgHtml(c)
   } else {
-    statusIconSvg = iconSvgHtml(GppBad, c)
+    statusIconSvg = gppBadSvgHtml(c)
   }
-  const fs = 4 + 8
+  const labelFontSizePx = STRENGTH_TYPOGRAPHY.labelFontSizePx
 
   const el = document.createElement('div')
   el.setAttribute('data-pearpass-password-strength', '1')
@@ -190,7 +185,7 @@ export function showPasswordStrengthNearField(inputElement, password) {
     '">',
     statusIconSvg,
     '<span style="margin-left:4px;white-space:nowrap;font-size:',
-    fs,
+    labelFontSizePx,
     'px;font-weight:400;letter-spacing:0.01em">',
     escapeHtml(label),
     '</span></div>'
@@ -208,7 +203,7 @@ export function showPasswordStrengthNearField(inputElement, password) {
     'border-radius: 100px',
     'overflow: hidden',
     'background: ' + colors.pocketBg,
-    'font-family: Inter, system-ui, -apple-system, sans-serif',
+    'font-family: ' + STRENGTH_TYPOGRAPHY.fontFamily,
     'pointer-events: none',
     'line-height: 1'
   ].join(';')

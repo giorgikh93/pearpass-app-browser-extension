@@ -1,3 +1,5 @@
+import './utils/contentI18n.js'
+
 import { generateUniqueId } from '@tetherto/pear-apps-utils-generate-unique-id'
 import { SAVE_CREDENTIALS_AFTER_LOGIN_ENABLED } from '@tetherto/pearpass-lib-constants'
 import { RECORD_TYPES } from '@tetherto/pearpass-lib-vault'

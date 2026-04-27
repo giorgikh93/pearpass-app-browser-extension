@@ -5,39 +5,6 @@ import {
 
 import { showPasswordStrengthNearField } from './showPasswordStrengthNearField'
 
-jest.mock('react-dom/server', () => ({
-  renderToStaticMarkup: (el) => {
-    if (!el) {
-      return ''
-    }
-    const fromProps = el.props?.['data-testid']
-    if (fromProps) {
-      return `<span data-mock="${fromProps}"/>`
-    }
-    const d = el.type?.displayName
-    if (d?.startsWith('KitIcon_')) {
-      return `<span data-mock="icon-${d.replace('KitIcon_', '')}"/>`
-    }
-    return '<span data-mock="svg-mock"/>'
-  }
-}))
-
-jest.mock('@tetherto/pearpass-lib-ui-kit/icons', () => {
-  const { createElement } = require('react')
-  const stub = (name) => {
-    const C = (props) =>
-      createElement('svg', { 'data-testid': `icon-${name}`, ...props })
-    C.displayName = `KitIcon_${name}`
-    return C
-  }
-  return {
-    PearpassLogo: stub('PearpassLogo'),
-    VerifiedUser: stub('VerifiedUser'),
-    GppMaybe: stub('GppMaybe'),
-    GppBad: stub('GppBad')
-  }
-})
-
 jest.mock('@tetherto/pearpass-utils-password-check', () => {
   const actual = jest.requireActual('@tetherto/pearpass-utils-password-check')
   return {
@@ -138,8 +105,8 @@ describe('showPasswordStrengthNearField', () => {
     expect(pill.innerHTML).toContain('#BEE35A')
     expect(pill.innerHTML).toContain('#15180E')
     expect(pill.innerHTML).toContain('#212814')
-    expect(pill.innerHTML).toContain('data-mock="icon-VerifiedUser"')
-    expect(pill.innerHTML).toContain('data-mock="icon-PearpassLogo"')
+    expect(pill.innerHTML).toContain('data-pearpass-icon="verified-user"')
+    expect(pill.innerHTML).toContain('data-pearpass-icon="pearpass-logo"')
   })
 
   it('renders Decent + GppMaybe color for WEAK', () => {
@@ -153,7 +120,7 @@ describe('showPasswordStrengthNearField', () => {
     const pill = document.querySelector('[data-pearpass-password-strength]')
     expect(pill.textContent).toMatch(/Decent/)
     expect(pill.innerHTML).toContain('#D7D245')
-    expect(pill.innerHTML).toContain('data-mock="icon-GppMaybe"')
+    expect(pill.innerHTML).toContain('data-pearpass-icon="gpp-maybe"')
   })
 
   it('renders Vulnerable + GppBad color for VULNERABLE', () => {
@@ -168,7 +135,7 @@ describe('showPasswordStrengthNearField', () => {
     expect(pill.textContent).toMatch(/Vulnerable/)
     expect(pill.innerHTML).toContain('#D13B3D')
     expect(pill.innerHTML).toContain('#1c1c1c')
-    expect(pill.innerHTML).toContain('data-mock="icon-GppBad"')
+    expect(pill.innerHTML).toContain('data-pearpass-icon="gpp-bad"')
   })
 
   it('replaces an existing strength pill on the same field', () => {

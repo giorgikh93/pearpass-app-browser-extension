@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent
+} from 'react'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -151,7 +158,8 @@ export const PasswordGeneratorV2 = () => {
     })
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const el = popupRef.current
     window.parent.postMessage(
       {
         type: 'setStyles',
@@ -159,14 +167,17 @@ export const PasswordGeneratorV2 = () => {
           iframeId: routerState?.iframeId,
           iframeType: routerState?.iframeType,
           style: {
-            width: `${popupRef.current?.offsetWidth ?? 440}px`,
-            height: `${popupRef.current?.offsetHeight ?? 280}px`,
+            width: `${el?.offsetWidth ?? 440}px`,
+            height: `${el?.offsetHeight ?? 280}px`,
             borderRadius: '12px'
           }
         }
       },
       '*'
     )
+  }, [mode, memorable, random, routerState?.iframeId, routerState?.iframeType])
+
+  useEffect(() => {
     void refetchVault()
   }, [recordsData?.length])
 
