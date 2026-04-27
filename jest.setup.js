@@ -24,6 +24,11 @@ jest.mock('@lingui/core/macro', () => ({
   }
 }))
 
+// Mock @lingui/react for tests
+jest.mock('@lingui/react', () => ({
+  Trans: ({ children, id, message }) => children || message || id
+}))
+
 // Mock crypto.getRandomValues for tests
 if (!global.crypto) {
   global.crypto = {}
@@ -57,6 +62,23 @@ if (!global.crypto.subtle) {
 
 // Mock chrome for tests
 if (typeof global.chrome === 'undefined') {
+  const makeStorageArea = () => {
+    const data = new Map()
+    return {
+      get: jest.fn(async (key) => {
+        if (typeof key === 'string') {
+          return data.has(key) ? { [key]: data.get(key) } : {}
+        }
+        return {}
+      }),
+      set: jest.fn(async (items) => {
+        for (const [k, v] of Object.entries(items)) data.set(k, v)
+      }),
+      remove: jest.fn(async (key) => {
+        data.delete(key)
+      })
+    }
+  }
   global.chrome = {
     runtime: {
       onMessage: {
@@ -65,6 +87,10 @@ if (typeof global.chrome === 'undefined') {
       sendMessage: jest.fn(),
       connect: jest.fn(),
       lastError: null
+    },
+    storage: {
+      session: makeStorageArea(),
+      local: makeStorageArea()
     }
   }
 }
