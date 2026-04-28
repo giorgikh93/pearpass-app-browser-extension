@@ -38,10 +38,6 @@ export const createStyles = (colors: ThemeColors) => ({
     gap: `${rawTokens.spacing4}px`,
     paddingBlock: `${rawTokens.spacing8}px`,
     paddingInline: `${rawTokens.spacing4}px`,
-    background: 'transparent',
-    border: 'none',
-    cursor: 'pointer' as const,
-    userSelect: 'none' as const,
     color: colors.colorTextSecondary,
     width: '100%'
   },

@@ -1,3 +1,5 @@
+import { rawTokens } from '@tetherto/pearpass-lib-ui-kit'
+
 import { useRedirect } from './hooks/useRedirect'
 import { useWindowResize } from './hooks/useWindowResize'
 import { Routes } from './Routes'
@@ -28,7 +30,7 @@ export const App = () => {
       ? {
           padding: '4px',
           border: '1px solid #3D403F',
-          borderRadius: '8px',
+          borderRadius: `${rawTokens.radius8}px`,
           boxSizing: 'border-box'
         }
       : {})

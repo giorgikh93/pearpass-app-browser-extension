@@ -126,11 +126,9 @@ export const ImportItemOrVaultModalContentV2 = () => {
         return
       }
       setShareLink(text)
-      setTimeout(() => {
-        if (!isPairing) {
-          void handleLoadVault(text)
-        }
-      }, 0)
+      if (!isPairing) {
+        void handleLoadVault(text)
+      }
     },
     [isPairing, handleLoadVault]
   )

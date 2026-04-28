@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { cloneElement, useId, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 import { Button, Snackbar, Text, useTheme } from '@tetherto/pearpass-lib-ui-kit'
@@ -23,7 +23,7 @@ type MultiSelectActionsBarProps = {
 type HoverButtonProps = {
   tooltip: string
   tooltipTestId: string
-  children: React.ReactNode
+  children: React.ReactElement<{ 'aria-describedby'?: string }>
   wrapperStyle: React.CSSProperties
   tooltipStyle: React.CSSProperties
 }
@@ -36,6 +36,7 @@ const HoverButton = ({
   tooltipStyle
 }: HoverButtonProps) => {
   const [isHovered, setIsHovered] = useState(false)
+  const tooltipId = useId()
 
   return (
     <span
@@ -45,9 +46,14 @@ const HoverButton = ({
       onFocus={() => setIsHovered(true)}
       onBlur={() => setIsHovered(false)}
     >
-      {children}
+      {cloneElement(children, { 'aria-describedby': tooltipId })}
       {isHovered && (
-        <div style={tooltipStyle} role="tooltip" data-testid={tooltipTestId}>
+        <div
+          id={tooltipId}
+          style={tooltipStyle}
+          role="tooltip"
+          data-testid={tooltipTestId}
+        >
           <Snackbar text={tooltip} />
         </div>
       )}

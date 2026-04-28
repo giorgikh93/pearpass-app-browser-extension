@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
-import { generateAvatarInitials } from '@tetherto/pear-apps-utils-avatar-initials'
 import {
   Button,
   Dialog,
@@ -13,11 +12,10 @@ import {
 import { ExpandMore, LockOutlined } from '@tetherto/pearpass-lib-ui-kit/icons'
 import { useRecords, useVault } from '@tetherto/pearpass-lib-vault'
 
-import { RecordAvatar } from '../../components/RecordAvatar'
-import { RECORD_COLOR_BY_TYPE } from '../../constants/recordColorByType'
 import { useGlobalLoading } from '../../context/LoadingContext'
 import { useModal } from '../../context/ModalContext'
 import { useRouter } from '../../context/RouterContext'
+import { RecordItemIcon } from '../RecordItemIcon'
 
 type PreviewRecord = {
   id: string
@@ -198,34 +196,28 @@ export const ImportVaultPreviewModalContent = () => {
                   borderRadius: rawTokens.radius8
                 }}
               >
-                {recordList.map((record) => {
-                  const recordType =
-                    record.type as keyof typeof RECORD_COLOR_BY_TYPE
-                  const avatarColor =
-                    RECORD_COLOR_BY_TYPE[recordType] ??
-                    RECORD_COLOR_BY_TYPE.custom
-                  const domain = loginWebsiteUrl(record)
-
-                  return (
-                    <ListItem
-                      key={record.id}
-                      icon={
-                        <RecordAvatar
-                          websiteDomain={domain}
-                          initials={generateAvatarInitials(record.data?.title)}
-                          size="md"
-                          isSelected={false}
-                          isFavorite={!!record.isFavorite}
-                          color={avatarColor}
-                        />
-                      }
-                      title={record.data?.title ?? record.type ?? ''}
-                      subtitle={getRecordSubtitle(record)}
-                      showDivider={false}
-                      testID={`import-vault-preview-record-${record.id}`}
-                    />
-                  )
-                })}
+                {recordList.map((record) => (
+                  <ListItem
+                    key={record.id}
+                    icon={
+                      <RecordItemIcon
+                        record={{
+                          type: record.type ?? '',
+                          data: {
+                            title: record.data?.title,
+                            websites: record.data?.websites?.map((w) =>
+                              typeof w === 'string' ? w : (w?.website ?? '')
+                            )
+                          }
+                        }}
+                      />
+                    }
+                    title={record.data?.title ?? record.type ?? ''}
+                    subtitle={getRecordSubtitle(record)}
+                    showDivider={false}
+                    testID={`import-vault-preview-record-${record.id}`}
+                  />
+                ))}
               </div>
             </div>
           )}

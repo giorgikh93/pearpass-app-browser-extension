@@ -3,6 +3,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 import { ListItem, useTheme } from '@tetherto/pearpass-lib-ui-kit'
+import { Pressable } from '@tetherto/pearpass-lib-ui-kit/components/Pressable'
 import {
   ErrorFilled,
   ExpandMore,
@@ -36,31 +37,21 @@ type ActiveContextMenu = {
   position: { x: number; y: number }
 }
 
-const SECTION_TITLE_KEYS: Record<string, string> = {
-  favorites: 'Favorites',
-  all: 'All Items',
-  today: 'Today',
-  yesterday: 'Yesterday',
-  thisWeek: 'This Week',
-  thisMonth: 'This Month',
-  older: 'Older'
-}
-
 const sectionLabel = (key: string, fallback: string): string => {
-  switch (SECTION_TITLE_KEYS[key] ?? fallback) {
-    case 'Favorites':
+  switch (key) {
+    case 'favorites':
       return t`Favorites`
-    case 'All Items':
+    case 'all':
       return t`All Items`
-    case 'Today':
+    case 'today':
       return t`Today`
-    case 'Yesterday':
+    case 'yesterday':
       return t`Yesterday`
-    case 'This Week':
+    case 'thisWeek':
       return t`This Week`
-    case 'This Month':
+    case 'thisMonth':
       return t`This Month`
-    case 'Older':
+    case 'older':
       return t`Older`
     default:
       return fallback
@@ -185,29 +176,29 @@ export const RecordListViewV2 = ({
           return (
             <Fragment key={section.key}>
               <div style={styles.section}>
-                <button
-                  type="button"
-                  style={styles.sectionHeader}
+                <Pressable
                   onClick={() => toggleSection(section.key)}
                   data-testid={`record-list-section-${section.key}`}
                 >
-                  <div
-                    style={{
-                      ...styles.sectionHeaderChevron,
-                      ...(isCollapsed
-                        ? styles.sectionHeaderChevronCollapsed
-                        : {})
-                    }}
-                  >
-                    <ExpandMore width={16} height={16} color={iconColor} />
+                  <div style={styles.sectionHeader}>
+                    <div
+                      style={{
+                        ...styles.sectionHeaderChevron,
+                        ...(isCollapsed
+                          ? styles.sectionHeaderChevronCollapsed
+                          : {})
+                      }}
+                    >
+                      <ExpandMore width={16} height={16} color={iconColor} />
+                    </div>
+
+                    {section.isFavorites && (
+                      <StarFilled width={14} height={14} color={iconColor} />
+                    )}
+
+                    <span>{label}</span>
                   </div>
-
-                  {section.isFavorites && (
-                    <StarFilled width={14} height={14} color={iconColor} />
-                  )}
-
-                  <span>{label}</span>
-                </button>
+                </Pressable>
 
                 {!isCollapsed && (
                   <div style={styles.sectionList}>

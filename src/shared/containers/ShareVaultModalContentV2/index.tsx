@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 import { useCountDown } from '@tetherto/pear-apps-lib-ui-react-hooks'
@@ -11,7 +11,7 @@ import {
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
 import { ContentCopy } from '@tetherto/pearpass-lib-ui-kit/icons'
-import { useInvite } from '@tetherto/pearpass-lib-vault'
+import { useInvite, useVault } from '@tetherto/pearpass-lib-vault'
 
 import { createStyles } from './ShareVaultModalContentV2.styles'
 import { useModal } from '../../context/ModalContext'
@@ -32,6 +32,7 @@ export const ShareVaultModalContentV2 = () => {
     deleteInvite: () => Promise<void> | void
     data: { publicKey?: string; vaultId?: string } | undefined
   }
+  const { data: activeVault } = useVault()
   const { setShouldBypassAutoLock } = useAutoLockPreferences() as {
     setShouldBypassAutoLock: (value: boolean) => void
   }
@@ -54,15 +55,26 @@ export const ShareVaultModalContentV2 = () => {
     return () => setShouldBypassAutoLock(false)
   }, [setShouldBypassAutoLock])
 
+  // Refs keep the latest functions without re-running the create/delete effect
+  // every render — useInvite returns fresh references each time.
+  const createInviteRef = useRef(createInvite)
+  createInviteRef.current = createInvite
+  const deleteInviteRef = useRef(deleteInvite)
+  deleteInviteRef.current = deleteInvite
+  const hasInviteRef = useRef(!!data?.publicKey)
+  hasInviteRef.current = !!data?.publicKey
+
+  // Mount/unmount only — refs hold the latest references so the effect doesn't
+  // re-run on every render of useInvite.
   useEffect(() => {
-    if (!data?.publicKey) {
-      void createInvite()
+    if (!hasInviteRef.current) {
+      void createInviteRef.current()
     }
 
     return () => {
-      void deleteInvite()
+      void deleteInviteRef.current()
     }
-  }, [createInvite, deleteInvite])
+  }, [])
 
   useEffect(() => {
     if (data?.publicKey) {
@@ -84,9 +96,11 @@ export const ShareVaultModalContentV2 = () => {
 
   const displayLink = isCopied ? t`Copied!` : (data?.publicKey ?? '')
 
+  const vaultName = activeVault?.name ?? t`Vault`
+
   return (
     <Dialog
-      title={t`Share Personal Vault`}
+      title={t`Share ${vaultName}`}
       onClose={closeModal}
       testID="share-vault-dialog-v2"
       closeButtonTestID="share-vault-close-v2"

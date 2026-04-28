@@ -19,6 +19,7 @@ import {
 } from '@tetherto/pearpass-lib-ui-kit'
 import { Pressable } from '@tetherto/pearpass-lib-ui-kit/components/Pressable'
 import {
+  Close,
   CreateNewFolder,
   EditOutlined,
   ExpandMore,
@@ -46,8 +47,8 @@ import { useModal } from '../../context/ModalContext'
 import { useRouter } from '../../context/RouterContext'
 import { useRecordMenuItemsV2 } from '../../hooks/useRecordMenuItemsV2'
 import { sortByName } from '../../utils/sortByName'
-import { ConfirmationModalContent } from '../ConfirmationModalContent'
-import { CreateFolderModalContent } from '../CreateFolderModalContent'
+import { CreateFolderModalContentV2 } from '../CreateFolderModalContentV2'
+import { DeleteFolderModalContent } from '../DeleteFolderModalContent'
 
 const FAVORITES_FOLDER_ID = 'favorites'
 
@@ -119,20 +120,16 @@ export const SidebarV2 = () => {
   }
 
   const handleAddFolderClick = () => {
-    setModal(
-      <CreateFolderModalContent
-        onCreate={() => undefined}
-        initialValues={{ title: '' }}
-      />
-    )
+    setModal(<CreateFolderModalContentV2 onClose={closeModal} />)
   }
 
   const handleRenameFolder = (folderName: string) => {
     setModal(
-      <CreateFolderModalContent
+      <CreateFolderModalContentV2
         initialValues={{ title: folderName }}
-        onCreate={(newName: string) => {
-          if (routerState?.folder === folderName) {
+        onClose={closeModal}
+        onRename={(newName, previousName) => {
+          if (routerState?.folder === previousName) {
             navigate('vault', {
               state: { recordType: currentRecordType, folder: newName }
             })
@@ -172,19 +169,10 @@ export const SidebarV2 = () => {
       return
     }
     setModal(
-      <ConfirmationModalContent
-        title={t`Are you sure to delete this Folder?`}
-        text={t`This action will permanently delete the folder and all items contained within it. Are you sure you want to proceed?`}
-        primaryLabel={t`No`}
-        secondaryLabel={t`Yes`}
-        primaryAction={closeModal}
-        secondaryAction={() => {
-          void deleteFolder(folderName)
-          if (routerState?.folder === folderName) {
-            navigate('vault', { state: { recordType: currentRecordType } })
-          }
-          closeModal()
-        }}
+      <DeleteFolderModalContent
+        folderName={folderName}
+        count={count}
+        onClose={closeModal}
       />
     )
   }
@@ -198,6 +186,8 @@ export const SidebarV2 = () => {
       ...styles.chevron,
       ...(isVaultSelectorOpen ? styles.chevronFlipped : {})
     }
+
+    const showCloseButton = !isCollapsed && isVaultSelectorOpen
 
     return (
       <div style={styles.vaultSelector} data-testid="sidebar-vault-selector">
@@ -229,6 +219,16 @@ export const SidebarV2 = () => {
             </div>
           </Pressable>
         </div>
+        {showCloseButton && (
+          <Button
+            variant="tertiary"
+            size="small"
+            onClick={() => setIsVaultSelectorOpen(false)}
+            data-testid="sidebar-vault-selector-close"
+            aria-label={t`Close vault selector`}
+            iconBefore={<Close style={iconTextPrimary} />}
+          />
+        )}
       </div>
     )
   }
