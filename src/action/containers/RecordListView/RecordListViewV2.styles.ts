@@ -39,7 +39,9 @@ export const createStyles = (colors: ThemeColors) => ({
     paddingBlock: `${rawTokens.spacing8}px`,
     paddingInline: `${rawTokens.spacing4}px`,
     color: colors.colorTextSecondary,
-    width: '100%'
+    width: '100%',
+    cursor: 'pointer' as const,
+    userSelect: 'none' as const
   },
 
   sectionHeaderChevron: {
