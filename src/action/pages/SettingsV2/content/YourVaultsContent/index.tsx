@@ -223,7 +223,7 @@ export const YourVaultsContent = () => {
               <ListItem
                 testID={`settings-other-vault-${v.name}-${index}`}
                 title={v.name}
-                onClick={() => switchVault(v)}
+                onClick={() => void switchVault(v)}
                 showDivider={index == otherVaults.length - 1}
                 withRoundedBorders={false}
                 icon={

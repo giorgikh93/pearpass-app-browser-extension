@@ -6,6 +6,7 @@ import { useVault, type Vault } from '@tetherto/pearpass-lib-vault'
 import { VaultPasswordFormModalContent } from '../containers/VaultPasswordFormModalContent'
 import { useLoadingContext } from '../context/LoadingContext'
 import { useModal } from '../context/ModalContext'
+import { useToast } from '../context/ToastContext'
 import { logger } from '../utils/logger'
 
 import { useVaultSwitch } from './useVaultSwitch'
@@ -22,6 +23,10 @@ jest.mock('../context/ModalContext', () => ({
   useModal: jest.fn()
 }))
 
+jest.mock('../context/ToastContext', () => ({
+  useToast: jest.fn()
+}))
+
 jest.mock('../containers/VaultPasswordFormModalContent', () => ({
   VaultPasswordFormModalContent: jest.fn(() => null)
 }))
@@ -33,6 +38,7 @@ jest.mock('../utils/logger', () => ({
 const mockUseVault = useVault as jest.Mock
 const mockUseLoadingContext = useLoadingContext as jest.Mock
 const mockUseModal = useModal as jest.Mock
+const mockUseToast = useToast as jest.Mock
 
 describe('useVaultSwitch', () => {
   const mockSetIsLoading = jest.fn()
@@ -40,6 +46,7 @@ describe('useVaultSwitch', () => {
   const mockCloseModal = jest.fn()
   const mockRefetchVault = jest.fn()
   const mockIsVaultProtected = jest.fn()
+  const mockSetToast = jest.fn()
 
   const activeVault: Vault = { id: 'v-active', name: 'Active' }
   const otherVault: Vault = { id: 'v-other', name: 'Other' }
@@ -52,6 +59,7 @@ describe('useVaultSwitch', () => {
       setModal: mockSetModal,
       closeModal: mockCloseModal
     })
+    mockUseToast.mockReturnValue({ setToast: mockSetToast })
 
     mockUseVault.mockReturnValue({
       data: activeVault,
@@ -144,7 +152,7 @@ describe('useVaultSwitch', () => {
     expect(onSuccess).toHaveBeenCalledTimes(1)
   })
 
-  it('logs and rethrows when refetch fails', async () => {
+  it('logs and shows a toast when refetch fails', async () => {
     mockIsVaultProtected.mockResolvedValue(false)
     const err = new Error('refetch failed')
     mockRefetchVault.mockRejectedValue(err)
@@ -152,22 +160,47 @@ describe('useVaultSwitch', () => {
 
     const { result } = renderHook(() => useVaultSwitch())
 
-    let caught: unknown
     await act(async () => {
-      try {
-        await result.current.switchVault(otherVault, onSuccess)
-      } catch (e) {
-        caught = e
-      }
+      await result.current.switchVault(otherVault, onSuccess)
     })
 
-    expect(caught).toBe(err)
     expect(logger.error).toHaveBeenCalledWith(
       'useVaultSwitch',
       'Error switching to vault:',
       err
     )
+    expect(mockSetToast).toHaveBeenCalledWith({
+      message: expect.any(String)
+    })
     expect(onSuccess).not.toHaveBeenCalled()
     expect(mockSetIsLoading).toHaveBeenLastCalledWith(false)
+  })
+
+  it('throws when protected vault refetch fails after password submit', async () => {
+    mockIsVaultProtected.mockResolvedValue(true)
+    const err = new Error('protected refetch failed')
+    mockRefetchVault.mockRejectedValue(err)
+    const onSuccess = jest.fn()
+
+    const { result } = renderHook(() => useVaultSwitch())
+
+    await act(async () => {
+      await result.current.switchVault(otherVault, onSuccess)
+    })
+
+    const modalElement = mockSetModal.mock.calls[0][0]
+    const { onSubmit } = modalElement.props as {
+      onSubmit: (password: string) => Promise<void>
+    }
+
+    let caught: unknown
+    await act(async () => {
+      try {
+        await onSubmit('wrong')
+      } catch (e) {
+        caught = e
+      }
+    })
+    expect(caught).toBe(err)
   })
 })

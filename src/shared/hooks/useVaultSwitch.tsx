@@ -1,10 +1,12 @@
 import { useCallback } from 'react'
 
+import { t } from '@lingui/core/macro'
 import { useVault, type Vault } from '@tetherto/pearpass-lib-vault'
 
 import { VaultPasswordFormModalContent } from '../containers/VaultPasswordFormModalContent'
 import { useLoadingContext } from '../context/LoadingContext'
 import { useModal } from '../context/ModalContext'
+import { useToast } from '../context/ToastContext'
 import { logger } from '../utils/logger'
 
 /**
@@ -14,6 +16,9 @@ import { logger } from '../utils/logger'
 export function useVaultSwitch() {
   const { setIsLoading } = useLoadingContext()
   const { setModal, closeModal } = useModal()
+  const { setToast } = useToast() as {
+    setToast: (toast: { message: string }) => void
+  }
   const {
     data: activeVault,
     isVaultProtected,
@@ -45,6 +50,8 @@ export function useVaultSwitch() {
                   await refetchVault(vault.id, { password })
                   closeModal()
                   await onSuccess()
+                } catch (error) {
+                  throw error
                 } finally {
                   setIsLoading(false)
                 }
@@ -58,7 +65,9 @@ export function useVaultSwitch() {
         await onSuccess()
       } catch (error) {
         logger.error('useVaultSwitch', 'Error switching to vault:', error)
-        throw error
+        setToast({
+          message: t`Couldn't switch vault. Please try again.`
+        })
       } finally {
         setIsLoading(false)
       }
