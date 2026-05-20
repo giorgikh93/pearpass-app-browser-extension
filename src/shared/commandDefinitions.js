@@ -22,6 +22,7 @@ export const COMMAND_DEFINITIONS = {
   vaultsGet: { params: ['key'] },
   vaultsList: { params: ['filterKey'] },
   vaultsAdd: { params: ['key', 'vault'] },
+  removeVault: { params: ['vaultId'] },
   vaultsClose: { params: [] },
 
   // Active vault commands
@@ -38,6 +39,7 @@ export const COMMAND_DEFINITIONS = {
   activeVaultCreateInvite: { params: [] },
   activeVaultDeleteInvite: { params: [] },
   activeVaultRemoveFile: { params: ['key'] },
+  activeVaultGetWriterKey: { params: [] },
 
   // Password and encryption key commands
   hashPassword: { params: ['password'] },
@@ -84,7 +86,11 @@ export const COMMAND_DEFINITIONS = {
   generateOtpCodesByIds: { params: ['recordIds'] },
   generateHotpNext: { params: ['recordId'] },
   addOtpToRecord: { params: ['recordId', 'otpInput'] },
-  removeOtpFromRecord: { params: ['recordId'] }
+  removeOtpFromRecord: { params: ['recordId'] },
+  findOtpDuplicates: {
+    params: ['options'],
+    extractParams: (options) => options
+  }
 }
 
 // Export just the command names

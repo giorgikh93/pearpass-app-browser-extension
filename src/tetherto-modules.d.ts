@@ -79,7 +79,7 @@ declare module '@tetherto/pearpass-lib-vault' {
       }
     ) => Promise<Vault | void>
     isVaultProtected: (vaultId: string | undefined) => Promise<boolean>
-    addDevice: (deviceName: string) => Promise<void>
+    addDevice: () => Promise<void>
     resetState: () => void
     syncVault: () => Promise<boolean>
     updateUnprotectedVault: (
@@ -90,9 +90,11 @@ declare module '@tetherto/pearpass-lib-vault' {
       vaultId: string,
       vaultUpdate: { name: string; password: string; currentPassword: string }
     ) => Promise<void>
+    deleteVaultLocal: (vaultId: string) => Promise<Vault[]>
   }
 
   export const setPearpassVaultClient: any
+  export function setCurrentDeviceName(name: string | null): void
   export const VaultProvider: any
   export function useVaults(options?: {
     onCompleted?: (payload: Vault[]) => void
@@ -258,6 +260,20 @@ declare module '@tetherto/pearpass-lib-vault' {
   export const useRecords: any
   export const useBlindMirrors: any
 
+  export function matchLoginRecords(
+    parsedOtp: { issuer?: string; label?: string } | null | undefined,
+    loginRecords: Array<{ id: string; data?: Record<string, unknown> }>
+  ): Array<{
+    record: { id: string; data?: Record<string, unknown> }
+    reasons: string[]
+  }>
+
+  export function parseOtpInput(
+    input: string | undefined | null
+  ): { issuer?: string; label?: string; secret?: string } | null
+
+  export function validateOtpInput(input: string | undefined | null): boolean
+
   export interface UseRecordCountsByTypeResult {
     isLoading: boolean
     data: Record<string, number> | undefined
@@ -267,6 +283,49 @@ declare module '@tetherto/pearpass-lib-vault' {
   export const closeAllInstances: () => Promise<void>
 
   export function vaultGetFile(path: string): Promise<unknown>
+
+  export const ACTION_TYPES: {
+    DELETE_VAULT: 'delete-vault'
+    [key: string]: string
+  }
+
+  export function broadcastAction(action: {
+    type: string
+    payload?: unknown
+  }): Promise<{
+    results: Array<{
+      targetDeviceId: string
+      timestamp: string
+      actionId: string
+      key: string
+    }>
+    failures: Array<{ targetDeviceId: string; error: Error }>
+  }>
+
+  export function broadcastDeleteVault(vaultId: string): Promise<{
+    results: Array<{
+      targetDeviceId: string
+      timestamp: string
+      actionId: string
+      key: string
+    }>
+    failures: Array<{ targetDeviceId: string; error: Error }>
+  }>
+
+  export function useFindOtpDuplicates(params?: {
+    secret?: string | null
+    excludeRecordId?: string
+  }): {
+    data: Array<{ id: string; title: string }>
+    isLoading: boolean
+  }
+}
+
+declare module '@tetherto/pearpass-lib-vault/src/instances' {
+  export const pearpassVaultClient: {
+    on?: (event: string, handler: (...args: any[]) => void) => void
+    off?: (event: string, handler: (...args: any[]) => void) => void
+  }
 }
 
 declare module '@tetherto/pearpass-lib-constants' {

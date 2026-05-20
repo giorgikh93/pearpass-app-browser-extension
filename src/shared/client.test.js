@@ -10,6 +10,9 @@ jest.mock('@tetherto/pearpass-lib-vault', () => ({
 jest.mock('./constants/envMode', () => ({
   MODE: 'test'
 }))
+jest.mock('./utils/initCurrentDeviceName', () => ({
+  initCurrentDeviceName: jest.fn().mockResolvedValue(undefined)
+}))
 
 describe('client module', () => {
   beforeEach(() => {
