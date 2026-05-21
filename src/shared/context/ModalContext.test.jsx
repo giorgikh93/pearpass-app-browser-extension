@@ -6,11 +6,6 @@ import { ModalProvider, useModal } from './ModalContext'
 import { BASE_TRANSITION_DURATION } from '../constants/transitions'
 import '@testing-library/jest-dom'
 
-const mockIsV2 = jest.fn(() => false)
-
-jest.mock('../utils/designVersion', () => ({
-  isV2: () => mockIsV2()
-}))
 jest.mock('../containers/Overlay', () => ({
   Overlay: ({ children, onClick }) => (
     <div role="dialog" aria-label="overlay" onClick={onClick}>
@@ -45,10 +40,6 @@ const TestComponent = () => {
 describe('ModalContext', () => {
   const renderWithProvider = (ui) => render(<ModalProvider>{ui}</ModalProvider>)
 
-  beforeEach(() => {
-    mockIsV2.mockReturnValue(false)
-  })
-
   it('should open a modal when setModal is called', () => {
     renderWithProvider(<TestComponent />)
 
@@ -81,9 +72,21 @@ describe('ModalContext', () => {
   })
 
   it('should render an overlay if hasOverlay is true', () => {
-    renderWithProvider(<TestComponent />)
+    const TestComponentWithOverlay = () => {
+      const { setModal } = useModal()
+      return (
+        <button
+          onClick={() =>
+            setModal(<div>Modal Content</div>, { hasOverlay: true })
+          }
+        >
+          Open Modal With Overlay
+        </button>
+      )
+    }
+    renderWithProvider(<TestComponentWithOverlay />)
 
-    fireEvent.click(screen.getByText('Open Modal'))
+    fireEvent.click(screen.getByText('Open Modal With Overlay'))
 
     expect(screen.getByRole('dialog', { name: /overlay/i })).toBeInTheDocument()
   })
@@ -112,9 +115,7 @@ describe('ModalContext', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('should not render an overlay by default when isV2() is true', () => {
-    mockIsV2.mockReturnValue(true)
-
+  it('should not render an overlay by default', () => {
     renderWithProvider(<TestComponent />)
 
     fireEvent.click(screen.getByText('Open Modal'))
