@@ -9,6 +9,7 @@ import {
   MultiSlotInput,
   PasswordField,
   Text,
+  TextArea,
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
 import { Add, TrashOutlined } from '@tetherto/pearpass-lib-ui-kit/icons'
@@ -79,9 +80,7 @@ export const CreateOrEditNoteModalContent = ({
     title: Validator.string().required(t`Title is required`),
     note: Validator.string(),
     customFields: Validator.array().items(
-      Validator.object({
-        note: Validator.string()
-      })
+      Validator.object({ note: Validator.string() })
     ),
     folder: Validator.string()
   })
@@ -183,11 +182,11 @@ export const CreateOrEditNoteModalContent = ({
             {t`Details`}
           </Text>
 
-          <InputField
+          <TextArea
             label={t`Note`}
             placeholder={t`Enter Note`}
             value={noteField.value as string}
-            onChange={(e) => noteField.onChange(e.target.value)}
+            onChange={(value) => noteField.onChange(value)}
             error={noteField.error || undefined}
             testID="createoredit-note-v2-note"
           />
