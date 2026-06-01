@@ -95,7 +95,7 @@ export const PasswordSuggestion = () => {
           data-testid="passwordsuggestionv2-title"
           variant="labelEmphasized"
         >
-          <Trans>Password recommendation</Trans>
+          <Trans>Password Recommendation</Trans>
         </Text>
       </div>
 
@@ -126,7 +126,7 @@ export const PasswordSuggestion = () => {
               color={theme.colors.colorTextPrimary}
               variant="labelEmphasized"
             >
-              <Trans>Fill password</Trans>
+              <Trans>Fill Password</Trans>
             </Text>
             <div
               className="text-text-secondary w-full max-w-full min-w-0 truncate text-sm"
