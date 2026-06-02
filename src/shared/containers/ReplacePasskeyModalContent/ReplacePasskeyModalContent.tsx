@@ -24,6 +24,7 @@ export const ReplacePasskeyModalContent = ({
       onClose={closeModal}
       testID="replace-passkey-dialog-v2"
       closeButtonTestID="replace-passkey-close-v2"
+      style={{ minHeight: '220px' } as any}
       footer={
         <>
           <Button

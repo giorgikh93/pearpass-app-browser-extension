@@ -33,6 +33,11 @@ const labelStyle: CSSProperties = {
   textAlign: 'left'
 }
 
+const otherVaultsStyle: CSSProperties = {
+  maxHeight: '180px',
+  overflowY: 'auto'
+}
+
 export const VaultSwitcherDropdown = ({
   vaults,
   activeVault,
@@ -113,32 +118,35 @@ export const VaultSwitcherDropdown = ({
         </div>
       </Pressable>
 
-      {isOpen &&
-        otherVaults.map((vault) => (
-          <Pressable
-            key={vault.id}
-            onClick={() => handleSelect(vault)}
-            data-testid={`vault-switcher-option-${vault.id}`}
-            style={pressableStyle}
-          >
-            <div style={rowStyle}>
-              <LockFilled
-                width={20}
-                height={20}
-                color={theme.colors.colorTextPrimary}
-              />
-              <div style={labelStyle}>
-                <Text
-                  variant="body"
-                  as="span"
+      {isOpen && (
+        <div style={otherVaultsStyle} data-testid="vault-switcher-options">
+          {otherVaults.map((vault) => (
+            <Pressable
+              key={vault.id}
+              onClick={() => handleSelect(vault)}
+              data-testid={`vault-switcher-option-${vault.id}`}
+              style={pressableStyle}
+            >
+              <div style={rowStyle}>
+                <LockFilled
+                  width={20}
+                  height={20}
                   color={theme.colors.colorTextPrimary}
-                >
-                  {vault.name}
-                </Text>
+                />
+                <div style={labelStyle}>
+                  <Text
+                    variant="body"
+                    as="span"
+                    color={theme.colors.colorTextPrimary}
+                  >
+                    {vault.name}
+                  </Text>
+                </div>
               </div>
-            </div>
-          </Pressable>
-        ))}
+            </Pressable>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

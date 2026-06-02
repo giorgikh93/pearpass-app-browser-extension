@@ -1,4 +1,4 @@
-export const DYNAMIC_WINDOW_MIN_HEIGHT = 150
+export const DYNAMIC_WINDOW_MIN_HEIGHT = 281
 export const DYNAMIC_WINDOW_MAX_HEIGHT = 510
 // Used as the popup's opening height before content-driven resize takes over.
 // Picked to roughly match typical passkey-screen content so the post-mount
