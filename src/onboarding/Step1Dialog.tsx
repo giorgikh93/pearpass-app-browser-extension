@@ -60,7 +60,7 @@ export const Step1Dialog = ({ onNext }: Step1Props) => {
           <div className="flex flex-col gap-[var(--spacing12)]">
             <Text as="p">
               <Trans>
-                Pinning Pearpass keeps it one click away whenever you need it
+                Pinning Pearpass keeps it one click away whenever you need it.
               </Trans>
               <br />
               <Trans>

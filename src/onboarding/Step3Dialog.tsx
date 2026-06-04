@@ -32,7 +32,7 @@ export const Step3Dialog = () => {
         onClick={handleNext}
         data-testid="onboarding-step3-open-button"
       >
-        <Trans>Open Pearpass extension</Trans>
+        <Trans>Open PearPass Extension</Trans>
       </Button>
     </div>
   )
@@ -54,12 +54,13 @@ export const Step3Dialog = () => {
         </div>
         <div className="flex flex-col items-center gap-[var(--spacing16)] text-center">
           <Title as="h2">
-            <Trans>Your browser is now securely connected</Trans>
+            <Trans>PearPass is Ready</Trans>
           </Title>
           <div className="flex flex-col gap-[var(--spacing12)]">
             <Text as="p">
+              <Trans>Your browser is now securely connected.</Trans>
               <Trans>
-                You can autofill, save and generate passwords instantly.
+                You can autofill, save, and generate passwords instantly.
               </Trans>
             </Text>
             <div className="flex flex-col gap-[var(--spacing8)]">

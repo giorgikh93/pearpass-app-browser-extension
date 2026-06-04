@@ -1,12 +1,12 @@
 import { normalizeUrl } from './normalizeUrl'
 
 describe('normalizeUrl', () => {
-  test('should add http protocol if missing and lowercases host', () => {
-    expect(normalizeUrl('Example.COM')).toBe('http://example.com')
+  test('should add https protocol if missing and lowercases host', () => {
+    expect(normalizeUrl('Example.COM')).toBe('https://example.com')
   })
 
-  test('should default to https when defaultToSecureProtocol is true', () => {
-    expect(normalizeUrl('Example.COM', true)).toBe('https://example.com')
+  test('should default to http when defaultToSecureProtocol is false', () => {
+    expect(normalizeUrl('Example.COM', false)).toBe('http://example.com')
   })
 
   test('should retain existing http protocol and lowercases', () => {
@@ -26,14 +26,14 @@ describe('normalizeUrl', () => {
   })
 
   test('should keep non-standard ports', () => {
-    expect(normalizeUrl('example.com:8080')).toBe('http://example.com:8080')
+    expect(normalizeUrl('example.com:8080')).toBe('https://example.com:8080')
     expect(normalizeUrl('https://Example.COM:8443/path')).toBe(
       'https://example.com:8443/path'
     )
   })
 
   test('should removes trailing slash on path', () => {
-    expect(normalizeUrl('example.com/path/')).toBe('http://example.com/path')
+    expect(normalizeUrl('example.com/path/')).toBe('https://example.com/path')
     expect(normalizeUrl('https://example.com/path/')).toBe(
       'https://example.com/path'
     )
