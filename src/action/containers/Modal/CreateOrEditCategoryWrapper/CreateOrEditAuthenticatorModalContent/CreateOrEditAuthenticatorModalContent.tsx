@@ -250,6 +250,7 @@ export const CreateOrEditAuthenticatorModalContent = ({
           <MultiSlotInput testID="createoredit-authenticator-v2-link-slot">
             <Combobox
               stretch
+              menuPlacement="top"
               label={t`Link to Existing Login`}
               title={t`Change Login Match`}
               value={(linkedRecord?.data?.title as string) ?? ''}
