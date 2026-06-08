@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import {
@@ -14,6 +14,7 @@ import { SyncingFailedModal } from './SyncingFailedModal'
 import { secureChannelMessages } from '../shared/services/messageBridge'
 import { pendingPairingStore } from '../shared/services/pendingPairingStore'
 import {
+  ContentPaste,
   PearpassLogo,
   Settings,
   SwapVert
@@ -26,9 +27,21 @@ interface Step2Props {
 export const Step2Dialog = ({ onNext }: Step2Props) => {
   const { theme } = useTheme()
   const accentColor = theme.colors.colorLinkText
+  const { colors } = theme
 
   const [code, setCode] = useState('')
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null)
+
+  const handlePasteClick = useCallback(async () => {
+    try {
+      const pastedText = await navigator.clipboard.readText()
+      if (pastedText) {
+        setCode(pastedText.trim())
+      }
+    } catch (err) {
+      console.error('Failed to paste from clipboard:', err)
+    }
+  }, [])
 
   const extractErrorMessage = (err: unknown): string => {
     if (typeof err === 'string') return err
@@ -178,6 +191,16 @@ export const Step2Dialog = ({ onNext }: Step2Props) => {
               setCode(e.target.value)
             }}
             testID="onboarding-step2-code-input"
+            rightSlot={
+              <Button
+                variant="tertiary"
+                size="small"
+                onClick={handlePasteClick}
+                aria-label={t`Paste from clipboard`}
+                data-testid="onboarding-step2-paste"
+                iconBefore={<ContentPaste color={colors.colorTextPrimary} />}
+              />
+            }
           />
         </div>
       </div>

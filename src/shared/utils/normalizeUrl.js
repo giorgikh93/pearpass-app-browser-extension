@@ -3,9 +3,9 @@
  * @param defaultToSecureProtocol
  * @returns {string | null}
  */
-export const normalizeUrl = (urlString, defaultToSecureProtocol = false) => {
+export const normalizeUrl = (urlString, defaultToSecureProtocol = true) => {
   try {
-    // Ensure there’s a protocol (default to http:// if missing)
+    // Ensure there’s a protocol (default to https:// if missing)
     const defaultProtocolPrefix = defaultToSecureProtocol
       ? 'https://'
       : 'http://'

@@ -110,6 +110,11 @@ export const Sidebar = () => {
     )
   }, [foldersData])
 
+  const allFoldersCount = useMemo(
+    () => customFolders.reduce((total, folder) => total + folder.count, 0),
+    [customFolders]
+  )
+
   const favoritesCount =
     (foldersData?.favorites?.records?.length as number | undefined) ?? 0
 
@@ -337,7 +342,7 @@ export const Sidebar = () => {
                     <NavbarListItem
                       testID="sidebar-folder-all"
                       label={t`All Folders`}
-                      count={isCollapsed ? undefined : (recordCounts?.all ?? 0)}
+                      count={isCollapsed ? undefined : allFoldersCount}
                       selected={isAllFoldersActive}
                       variant={isAllFoldersActive ? 'default' : 'secondary'}
                       size="small"
